@@ -1,5 +1,5 @@
-clear;
-close all;
+% clear;
+% close all;
 
 %%New version: to move M, just clic on the figure where M should be placed,
 %%then press return. Press return without clic to finish. Then the figure
@@ -10,11 +10,12 @@ f1 =0.5;
 f2 = 0.15;
 heigth = 1.2;
 width = 2;
-Rot = [ 0 0 1;cos(pi/3) -sin(pi/3) 0; sin(pi/3) cos(pi/3) 0];
-% xrot = Rot*[1;0;0];
-% yrot = Rot*[0;1;0];
-% zrot = Rot*[0;0;1];
-M = [1; 2; 4];
+Rot = R;
+%Rot = [ 0 0 1;cos(pi/3) -sin(pi/3) 0; sin(pi/3) cos(pi/3) 0];
+xrot = Rot*[1;0;0];
+yrot = Rot*[0;1;0];
+zrot = Rot*[0;0;1];
+M = [3; 2; 4];
 c1 = [0;0;0];
 F1 = [0;0;f1];
 Tra= [3;1;4];
@@ -26,12 +27,10 @@ F2 = c2 - (f2/f1)*Rot*F1;
 e1 = (c2-c1)/norm(c2-c1);
 e1=e1*f1/(e1(3));
 lambda = (f2)/(c2(1)-M(1));
-%m2 = inv(Rot)*(m1-Tra)
-m2 = lambda*M+(1-lambda)*c2;
-% m2=(M2-c2)/norm(M2-c2);
-% m2=m2*f2/(m2(1));
-% m2 = Rot\(m2-Tra);
-%m2 = -Rot*m1+Tra;
+m2 = (M-c2)/norm(M-c2);
+m2=Tra-m2*f2/dot(m2,zrot);
+% m2 = lambda*M+(1-lambda)*c2;
+
 lambda2 = (f2)/(c2(1)-c1(1));
 e2= lambda*c1 + (1-lambda2)*c2;
 %Planes

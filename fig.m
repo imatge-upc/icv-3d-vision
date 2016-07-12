@@ -30,9 +30,9 @@ lambda = (f2)/(c2(1)-M(1));
 m2 = (M-c2)/norm(M-c2);
 m2=Tra-m2*f2/dot(m2,zrot);
 % m2 = lambda*M+(1-lambda)*c2;
+e2 = (e1-c2)/norm(e1-c2);
+e2 = Tra-e2*f2/dot(e2,zrot);
 
-lambda2 = (f2)/(c2(1)-c1(1));
-e2= lambda*c1 + (1-lambda2)*c2;
 %Planes
 p1 = [F1(1)-width/2;F1(2)-heigth/2;F1(3)];
 p2 = [F1(1)+width/2;F1(2)-heigth/2;F1(3)];
@@ -89,10 +89,11 @@ while true
     for i = 1:floor(norm(M-[x;y;M(3)])/0.2)
         j = (i-1)/(floor(norm(M-[x;y;M(3)])/0.2)-1);
         Mtemp = ((1-j)*M+j*[x;y;M(3)]);
-        lambda = (f2)/(c2(1)-Mtemp(1));
-        m2 = lambda*Mtemp + (1-lambda)*c2;
+        
         m1 = (Mtemp-c1)/norm(Mtemp-c1);
         m1=m1*f1/m1(3);
+        m2 = (Mtemp-c2)/norm(Mtemp-c2);
+        m2=Tra-m2*f2/dot(m2,zrot);
         epipolar_lane1 = [m1 e1];
         epipolar_lane2 = [m2 e2];
         clf;
@@ -130,8 +131,8 @@ while true
     M = [x(n);y(n);M(3)];
     m1 = (M-c1)/norm(M-c1);
     m1=m1*f1/m1(3);
-    lambda = (f2)/(c2(1)-M(1));
-    m2 = lambda*M + (1-lambda)*c2;
+    m2 = (M-c2)/norm(M-c2);
+    m2=Tra-m2*f2/dot(m2,zrot);
     
     clf;
 end

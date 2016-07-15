@@ -45,9 +45,15 @@ viewId = 1;
 % if det (Rot) ==-1
 %     Rot(:,3) = -Rot(:,3);
 % end
-     [Rot, Tra] = cameraPose(F,CameraParams,CameraParams,matchedPoints1, matchedPoints2);
-      Tra = Tra';
+     [Rot, Tra] = cameraPose2(F,CameraParams,CameraParams,matchedPoints1, matchedPoints2);
+      
+      Tra = (-Tra*Rot^-1)';
+Rot = Rot';      
 % 
+
+% orientation = R';
+% location = -t * orientation;
+
 %     % Add the current view to the view set.
 %     %vSet = addView(vSet, 2, 'Points', currPoints);
 % 

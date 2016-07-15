@@ -37,17 +37,27 @@ p1 = [F1(1)-width/2;F1(2)-heigth/2;F1(3)];
 p2 = [F1(1)+width/2;F1(2)-heigth/2;F1(3)];
 p3 = [F1(1)+width/2;F1(2)+heigth/2;F1(3)];
 p4 = [F1(1)-width/2;F1(2)+heigth/2;F1(3)];
-Px =[p1(1) p2(1) p3(1) p4(1)];
-Py = [p1(2) p2(2) p3(2) p4(2)];
-xmin = min (Px);
-xmax = max (Px);
-ymin = min(Py);
-ymax = min (Py);
 
 p12 = F2 + Rot*[-width/2;-heigth/2;0];
 p22 = F2 + Rot*[width/2;-heigth/2;0];
 p32 = F2 + Rot*[width/2;heigth/2;0];
 p42 = F2 + Rot*[-width/2;heigth/2;0];
+Px =[p1(1) p2(1) p3(1) p4(1)];
+Px2 = [dot(p12,xrot) dot(p22,xrot) dot(p32,xrot) dot(p42,xrot)];
+Py = [p1(2) p2(2) p3(2) p4(2)];
+Py2 = [dot(p12,yrot) dot(p22,yrot) dot(p32,yrot) dot(p42,yrot)];
+%xmin2()
+xmin = min (Px);
+xmax = max (Px);
+ymin = min(Py);
+ymax = max (Py);
+xImage = [xmin xmax;xmin xmax];
+yImage=[ymin ymin; ymax ymax];
+zImage = [f1 f1;f1 f1];
+xImage2 = [p12(1) p22(1); p42(1),p32(1)];
+yImage2 = [p12(2) p22(2); p42(2),p32(2)];
+zImage2 = [p12(3) p22(3); p42(3),p32(3)];
+
 %check m2 is in the rectangle
 m2_in_image = abs(dot (m2-F2,xrot))<=width/2 && abs(dot (m2-F2,yrot))<=heigth/2;
 
@@ -67,11 +77,9 @@ while true
     zlabel('Z');
     hold on;
     rotate3d on;
-    xImage = [xmin xmax;xmin xmax];
-    yImage=[ymin ymax; ymin ymax];
-    zImage = [f1 f1;f1 f1];
-    %surf(xImage,yImage,zImage,'CData',im1,'FaceColor','texturemap');
     
+    surface(xImage,yImage,zImage,'CData',im1,'FaceColor','texturemap');
+    surface(xImage2,yImage2,zImage2,'CData',im2,'FaceColor','texturemap');
     plot3(F1(1),F1(2),F1(3),'+','color','r');
     
     plot3([c1(1), m1(1), M(1) e1(1) ], [c1(2) m1(2) M(2) e1(2)],[c1(3) m1(3), M(3) e1(3)],'+');
@@ -131,7 +139,8 @@ while true
         
         plot3([c1(1) c2(1)], [c1(2) c2(2)], [c1(3) c2(3)],'+');
         plot3([c1(1) c2(1)], [c1(2) c2(2)], [c1(3) c2(3)],'-','color',[0 0 0]);
-        
+        surface(xImage,yImage,zImage,'CData',im1,'FaceColor','texturemap');
+        surface(xImage2,yImage2,zImage2,'CData',im2,'FaceColor','texturemap');
         text(c1(1),c1(2),c1(3),'c1');
         text(m1(1),m1(2),m1(3),'m1');
         text(Mtemp(1),Mtemp(2),Mtemp(3),'M');
@@ -167,12 +176,13 @@ if (abs(F1(1)-m1(1))<=width/2 && abs(F1(2)-m1(2))<=heigth/2)
     plot3([c1(1) m1(1), M(1)], [c1(2) m1(2), M(2)],[c1(3) m1(3), M(3)],'-','color','b');
 end
 plot3([c2(1) m2(1), M(1)], [c2(2) m2(2), M(2)],[c2(3) m2(3), M(3)],'+');
+surface(xImage,yImage,zImage,'CData',im1,'FaceColor','texturemap');
+surface(xImage2,yImage2,zImage2,'CData',im2,'FaceColor','texturemap');
 if m2_in_image
-    plot3([c2(1) m2(1), M(1)], [c2(2) m2(2), M(2)],[c2(3) m2(3), M(3)],'-','color','b');
+    plot3([c2(1), m2(1), M(1)], [c2(2) m2(2), M(2)],[c2(3) m2(3), M(3)],'-','color','b');
 end
 plot3([c1(1) c2(1)], [c1(2) c2(2)], [c1(3) c2(3)],'+');
 plot3([c1(1) c2(1)], [c1(2) c2(2)], [c1(3) c2(3)],'-',color,[0 0 0]);
-
 text(c1(1),c1(2),c1(3),'c1');
 text(m1(1),m1(2),m1(3),'m1');
 text(M(1),M(2),M(3),'M');

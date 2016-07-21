@@ -5,24 +5,32 @@ close all;
 %%then press return. Press return without clic to finish. Then the figure
 %%can be rotated
 
+ Rot1 = [0.14139 0.153155 0.978035;0.989608 -0.0479961 -0.135547; 0.0261821 0.987036 -0.15835 ];
+ Rot2 = [0.494514 0.150712 0.856003;0.869109 -0.0974071 -0.484935; 0.0102952 0.983767 -0.179154 ];
+ Tra1 = [-17.6081; -3.12802; 0.014307];
+ Tra2 = [-13.8177; 0.726613; 0.116081];
+ Rot = (Rot2'*Rot1)';
+ Tra = -Rot2'*(Tra1-Tra2);
+
 %parameters
-f1 =0.7086;
-f2 = f1;
-width = 3;
-heigth = width*K(2,2)/K(1,1);
+
+f1 = 2.75948;
+f2 = f1*K(2,2)/K(1,1);
+width = 3.072;
+heigth = 2.048;
 xrot = Rot*[1;0;0];
 yrot = Rot*[0;1;0];
 zrot = Rot*[0;0;1];
-M = [2; 2; 6];
+M = [2; 0; 10];
 c1 = [0;0;0];
-F1 = [0;0;f1];
+F1 = [0;0;f1]%+[K(3,2)/1000;K(3,2)/1000;0];
 
-c2 = Tra;
+c2 = Rot*c1+Tra;
 M2 = Rot*M+Tra;
 m1 = (M-c1)/norm(M-c1);
 m1=m1*f1/(m1(3));
 %F2 = c2 - (f2/f1)*Rot*F1;
-F2 = c2+ f2*zrot;
+F2 = c2+ f2*zrot%+[dot(K(3,:),xrot)/1000;dot(K(3,:),yrot)/1000;0];
 e1 = (c2-c1)/norm(c2-c1);
 e1=e1*f1/(e1(3));
 lambda = (f2)/(c2(1)-M(1));
@@ -70,7 +78,7 @@ while true
     clf
     figure(1)
     view(0,-270);
-    axis([-5 10 -3 10 -3 10])
+    
     
     xlabel('X');
     ylabel('Y');
@@ -78,11 +86,11 @@ while true
     hold on;
     rotate3d on;
     
-    surface(xImage,yImage,zImage,'CData',im1,'FaceColor','texturemap');
-    surface(xImage2,yImage2,zImage2,'CData',im2,'FaceColor','texturemap');
+    surface(xImage,yImage,zImage,'CData',im2,'FaceColor','texturemap');
+    surface(xImage2,yImage2,zImage2,'CData',im1,'FaceColor','texturemap');
     plot3(F1(1),F1(2),F1(3),'+','color','r');
     
-    plot3([c1(1), m1(1), M(1) e1(1) ], [c1(2) m1(2) M(2) e1(2)],[c1(3) m1(3), M(3) e1(3)],'+');
+    plot3([c1(1), m1(1), M(1) e1(1) F2(1)], [c1(2) m1(2) M(2) e1(2) F2(2)],[c1(3) m1(3), M(3) e1(3) F2(3)],'+');
     plot3([p4(1) p1(1), p2(1), p3(1), p4(1)], [p4(2) p1(2) p2(2), p3(2), p4(2)],[p4(3) p1(3) p2(3), p3(3), p4(3)],'-','color','g');
     plot3([p42(1) p12(1), p22(1), p32(1), p42(1)], [p42(2) p12(2) p22(2), p32(2), p42(2)],[p42(3) p12(3) p22(3), p32(3), p42(3)],'-','color','g');
     if (abs(F1(1)-m1(1))<=width/2 && abs(F1(2)-m1(2))<=heigth/2)

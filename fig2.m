@@ -22,7 +22,7 @@ xrot = Rot*[1;0;0];
 yrot = Rot*[0;1;0];
 zrot = Rot*[0;0;1];
 
-M1 = [4; 0; 30];
+M1 = [3; 0; 12];
 c1 = [0;0;0];
 c2 = Tra;
 F1 = [0;0;f1];
@@ -131,7 +131,7 @@ while true
         epipolar_lane2 = [m2 e2];
         clf;
         figure(1)
-        axis ([-5 10 -3 10 -3 10]);
+        %axis ([-5 10 -3 10 -3 10]);
         view(0,-270);
         hold on;
         rotate3d on;
@@ -172,7 +172,7 @@ while true
 end
 clf
 figure(1)
-axis ([-5 10 -3 10 -3 10]);
+%axis ([-5 10 -3 10 -3 10]);
 view(0,-270);
 xlabel('X');
 ylabel('Y');

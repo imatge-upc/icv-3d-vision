@@ -1,6 +1,9 @@
 % clear;
 close all;
 
+im1 = imread('0000_s.png');
+im2 = imread('0001_s.png');
+
 %%New version: to move M, just clic on the figure where M should be placed,
 %%then press return. Press return without clic to finish. Then the figure
 %%can be rotated
@@ -11,6 +14,11 @@ close all;
  Rot = (Rot2'*Rot1);
  Tra = Rot2'*(Tra1-Tra2);
 %parameters
+%K = [2362.12 0 1520.69; 0 2366.12 1006.81; 0 0 1];
+scale = 1;
+H = [scale 0 0; 0 scale 0; 0 0 1];
+K = [2759.48 0 1520.69;0 2764.16 1006.81;0 0 1 ];
+K =H*K;
 f1 =K(1,1)/1000;
 f2 = K(2,2)/1000;
 %f1 = 2.75948;
@@ -18,9 +26,16 @@ f2 = K(2,2)/1000;
 width = 3.072;
 heigth = 2.048;
 
+
+width = 1,
+f1 = K(1,1)/3072;
+f2 = f1;
+heigth = f1*2048 / K(2,2),
+
 xrot = Rot*[1;0;0];
 yrot = Rot*[0;1;0];
 zrot = Rot*[0;0;1];
+
 
 M1 = [3; 0; 12];
 c1 = [0;0;0];
@@ -43,6 +58,19 @@ m2=Tra +m2*f2/dot(m2,zrot);
 
 e2 = (c1-c2)/norm(c1-c2);
 e2 = Tra-e2*f2/dot(e2,zrot);
+
+
+
+% Compute m1 and m2
+
+P1 = [1877.45 2524.68 -168.552 40958; 1408.04 -269.139 2568.9 23914.3; 0.978035 -0.135547 -0.15835 16.7996];
+P2 = [2666.32 1660.85 -244.029 35663.8; 1278.43 -757.487 2538.92 17920.5; 0.856003 -0.484935 -0.179154 12.2011];
+M11 = [80; -15; -12; 1];
+p1 = P1*M11;
+p2 = P2*M11;
+pp1 = [p1(1)/p1(3);p1(2)/p1(3)];
+pp2 = [p2(1)/p2(3);p2(2)/p2(3)];
+
 
 %Planes
 p1 = [F1(1)-width/2;F1(2)-heigth/2;F1(3)];
@@ -83,7 +111,7 @@ while true
     figure(1)
     view(0,-270);
     
-    
+    axis ([-7 12 -7 12 -7 12]);
     xlabel('X');
     ylabel('Y');
     zlabel('Z');
@@ -131,7 +159,7 @@ while true
         epipolar_lane2 = [m2 e2];
         clf;
         figure(1)
-        %axis ([-5 10 -3 10 -3 10]);
+        axis ([-5 10 -3 10 -3 10]);
         view(0,-270);
         hold on;
         rotate3d on;

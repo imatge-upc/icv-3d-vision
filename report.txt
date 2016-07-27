@@ -1,0 +1,14 @@
+Use the triangulate code to find a M point with the good depth.
+Report found coordonates in fig or fig2 script.
+
+Point M is computed like this:
+- Selection of the same points in the two images (m1 and m2).
+- Plot the (c1 m1) and (c2 m2) lines
+- Compute the intersection of these lines (or the two closest points, as they are unlikely to have a common point)
+- Choose the M point as the center of the two found points 
+
+To compute m1 and m2 from M point in fig, we proceed like this:
+-m1 is the intersection of (c1 M) point and the image 1 plane (z = f).
+-m2 is the intersection of (c2 M) point and the image 2 plane (zrot = f).
+
+To estimate the rotation ourselves, we have a script whichcompute the fundamental matrix . It computes two rotations and two translations. We have two try each one two find the good ones (it may be the transpose rotation or the opposite translation). Unfortunately it is not really accurate for the rotation, and completely false for the translation.

@@ -16,8 +16,6 @@ xrot = Rot*[1;0;0];
 yrot = Rot*[0;1;0];
 zrot = Rot*[0;0;1];
 
-
-
 width = 1;
 f1 = K(1,1)/size(im1,2);
 f2 = f1;
@@ -25,19 +23,20 @@ height = f1*size(im1,1) / K(2,2);
 
 
 %Selection of a couple of points
- imshow (im2);
- [x1,y1,button1] = ginput(1);
- imshow (im1);
- [x2,y2,button2] = ginput(1);
- %image points
- m1Pix = [x1;y1;1];
- m2Pix = [x2;y2;1];
- 
+figure(3)
+imshow (im2);
+[x1,y1,button1] = ginput(1);
+imshow (im1);
+[x2,y2,button2] = ginput(1);
+%image points
+m1Pix = [x1;y1;1];
+m2Pix = [x2;y2;1];
 
- %Cameras centers
- c1 = [0;0;0];
- c2 = Tra;
- %Center of image 1
+
+%Cameras centers
+c1 = [0;0;0];
+c2 = Tra;
+%Center of image 1
 F1 = [0;0;f1];
 %Center of image 2
 F2 = c2+ f2*Rot(:,3);
@@ -91,54 +90,51 @@ M1 = c1+10*(m1-c1);
 M2 = c2+10*(m2-c2);
 
 % Find closest points
-
-
 distmin = Inf;
 for i = 1:1000
     for j = 1:1000
-        Point1 = ((i-1)/1000)*M1+(1-(i-1)/1000)*m1;
-        Point2 = ((j-1)/1000)*M2+(1-(j-1)/1000)*m2;
+        Point1 = ((i-1)/999)*M1+(1-(i-1)/999)*m1;
+        Point2 = ((j-1)/999)*M2+(1-(j-1)/999)*m2;
         
-       dist = norm (Point1-Point2);
-       if dist < distmin
-          distmin = dist;
-          besti=i;
-          bestj=j;
-       end
-     end
+        dist = sqrt((Point1(1)-Point2(1))^2+(Point1(2)-Point2(2))^2+(Point1(3)-Point2(3))^2);
+        if dist < distmin
+            distmin = dist;
+            besti=i;
+            bestj=j;
+        end
+    end
 end
-    
-M = ((besti-1)/1000)*M1+(1-(besti-1)/1000)*m1;
+% Choose the middle of the two points
+M = (((besti-1)/999)*M1+(1-(besti-1)/999)*m1+((bestj-1)/999)*M2+(1-(bestj-1)/999)*m2)/2;
 
-
+%Plot the 3D figure
 clf
-    figure(1)
-    %x,y view
-    view(0,-270);
-        
-    xlabel('X');
-    ylabel('Y');
-    zlabel('Z');
-    hold on;
-    rotate3d on;
-   %image display 
-    surface(xImage,yImage,zImage,'CData',im2,'FaceColor','texturemap');
-    surface(xImage2,yImage2,zImage2,'CData',im1,'FaceColor','texturemap');
-    %Plot
+figure(2)
+%x,y view
+view(0,-270);
 
-    plot3([c1(1), m1(1), M(1)], [c1(2) m1(2) M(2)],[c1(3) m1(3) M(3)],'+');
-    plot3([p4(1) p1(1), p2(1), p3(1), p4(1)], [p4(2) p1(2) p2(2), p3(2), p4(2)],[p4(3) p1(3) p2(3), p3(3), p4(3)],'-','color','g');
-    plot3([p42(1) p12(1), p22(1), p32(1), p42(1)], [p42(2) p12(2) p22(2), p32(2), p42(2)],[p42(3) p12(3) p22(3), p32(3), p42(3)],'-','color','g');
-    % Plot image points
-    
-    plot3([c1(1) m1(1) M1(1)], [c1(2) m1(2) M1(2)],[c1(3) m1(3) M1(3)],'-','color','b');
-    plot3([c2(1) m2(1)], [c2(2) m2(2)],[c2(3) m2(3)],'+');
-    plot3([c2(1) m2(1) M2(1)], [c2(2) m2(2) M2(2)],[c2(3) m2(3) M2(3)],'-','color','b');
-    plot3([c1(1) c2(1)], [c1(2) c2(2)], [c1(3) c2(3)],'+');
-    plot3([c1(1) c2(1)], [c1(2) c2(2)], [c1(3) c2(3)],'-','color',[0 0 0]);
-    
-    text(c1(1),c1(2),c1(3),'c1');
-    text(m1(1),m1(2),m1(3),'m1');
-    text(c2(1),c2(2),c2(3),'c2');
-    text(m2(1),m2(2),m2(3),'m2');
-    text(M(1),M(2), M(3),'M');
+xlabel('X');
+ylabel('Y');
+zlabel('Z');
+hold on;
+rotate3d on;
+%image display
+surface(xImage,yImage,zImage,'CData',im2,'FaceColor','texturemap');
+surface(xImage2,yImage2,zImage2,'CData',im1,'FaceColor','texturemap');
+
+
+plot3([c1(1), m1(1), M(1)], [c1(2) m1(2) M(2)],[c1(3) m1(3) M(3)],'+');
+plot3([p4(1) p1(1), p2(1), p3(1), p4(1)], [p4(2) p1(2) p2(2), p3(2), p4(2)],[p4(3) p1(3) p2(3), p3(3), p4(3)],'-','color','g');
+plot3([p42(1) p12(1), p22(1), p32(1), p42(1)], [p42(2) p12(2) p22(2), p32(2), p42(2)],[p42(3) p12(3) p22(3), p32(3), p42(3)],'-','color','g');
+% Plot image points
+plot3([c1(1) m1(1) M1(1)], [c1(2) m1(2) M1(2)],[c1(3) m1(3) M1(3)],'-','color','b');
+plot3([c2(1) m2(1)], [c2(2) m2(2)],[c2(3) m2(3)],'+');
+plot3([c2(1) m2(1) M2(1)], [c2(2) m2(2) M2(2)],[c2(3) m2(3) M2(3)],'-','color','b');
+plot3([c1(1) c2(1)], [c1(2) c2(2)], [c1(3) c2(3)],'+');
+plot3([c1(1) c2(1)], [c1(2) c2(2)], [c1(3) c2(3)],'-','color',[0 0 0]);
+%Point names
+text(c1(1),c1(2),c1(3),'c1');
+text(m1(1),m1(2),m1(3),'m1');
+text(c2(1),c2(2),c2(3),'c2');
+text(m2(1),m2(2),m2(3),'m2');
+text(M(1),M(2), M(3),'M');

@@ -1,7 +1,7 @@
 clear;
 close all;
-im1 = imread('0000_s.png');
-im2 = imread('0001_s.png');
+im1 = imread('0001_s.png');
+im2 = imread('0000_s.png');
 %give matching point
 
 button = 0;
@@ -41,17 +41,22 @@ scale = 0.3;
 H = [scale 0 0; 0 scale 0; 0 0 1];
 K = H * K;
 E = K'*F*K;
-[U,S,V] =  svd(E); 
+[U,S,V] =  svd(E);
 e = (S(1,1) + S(2,2)) / 2;
 S(1,1) = e;
 S(2,2) = e;
 S(3,3) = 0;
 E = U * S * V';
+[U, ~, V] = svd(E);
+
 CameraParams = cameraParameters('IntrinsicMatrix',K);
 Rot1 = U*[0 -1 0;1 0 0;0 0 1]*V';
 Rot2 = U*[0 -1 0;1 0 0;0 0 1]'*V';
-  Tra1 = U(:,3);
-  Tra2 = -U(:,3);
+Tx1 = U*[0 -1 0;1 0 0;0 0 1]'*S*U';
+Tx2 =U*[0 -1 0;1 0 0;0 0 1]*S*U';
+Tra1 =[Tx1(3,2);Tx1(1,3);Tx1(2,1)];
+Tra2 = [Tx2(3,2);Tx2(1,3);Tx2(2,1)];
+
 %  Rot = U*[0 1 0;1 0 0;0 0 1]*V';
 %  if det (Rot) ==-1
 %      Rot(:,3) = -Rot(:,3);
